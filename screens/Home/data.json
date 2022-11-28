@@ -1,0 +1,77 @@
+{
+    "food":
+        [
+            {
+                "id":1,
+                "price":1000,
+                "title":"Scones",
+                "location":21.2,
+                "rating":3
+            },
+            {
+                "id":2,
+                "price":2000,
+                "title":"Martinni",
+                "location":23.2,
+                "rating":4.4
+
+            },
+            {
+                "id":3,
+                "price":500,
+                "title":"Sx on d beach",
+                "location":44.2,
+                "rating":1
+
+            },
+            {
+                "id":4,
+                "price":1800,
+                "title":"Turkey",
+                "location":92,
+                "rating":4.5
+
+            },{
+                "id":5,
+                "price":6000,
+                "title":"Cookies",
+                "location":86.2,
+                "rating":1
+
+            }
+            ,{
+                "id":6,
+                "title":"Snacks",
+                "location":11.1,
+                "rating":0
+
+            }
+        ],
+
+    "categories":[
+        {
+            "id":1,
+            "pic":"require('../../assets/bg1.png')",
+            "title":"Pastry"
+        },
+        {
+            "id":2,
+            "title":"Breakfast"
+        },
+        {
+            "id":3,
+            "title":"Brunch"
+        },
+        {
+            "id":4,
+            "title":"Desert"
+        },{
+            "id":5,
+            "title":"Cakes"
+        }
+        ,{
+            "id":6,
+            "title":"Snacks"
+        }
+    ]
+}
