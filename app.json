@@ -2,6 +2,9 @@
   "expo": {
     "name": "Eathub",
     "slug": "Eathub",
+    "extra": {
+      "apiUrl": "process.env.API_URL"
+    },
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

@@ -5,6 +5,7 @@ import { hideAsync } from 'expo-splash-screen';
 import { colorSchema,styles as commonstyles } from '../../setup';
 import Message from '../../components/messagetoast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Endpoints from '../../backend'
 
 //add message toast to display messages
 export default  function Loginscreen(props){
@@ -15,7 +16,7 @@ export default  function Loginscreen(props){
     const [password,setpassword]=useState('')
     const [messages,setmessages]=useState([])
     const [message,setmessage]=useState('')
-
+    let backendConnector=new Endpoints()
     let counter=0
 
     function err(err){
@@ -54,7 +55,8 @@ export default  function Loginscreen(props){
             body: JSON.stringify({username,password})
           }
         try{
-        let response=await fetch('https://eathub-web-api.herokuapp.com/api/v1/token/login/',requestOptions)
+          console.log("Trying to log you in")
+        let response=await fetch(`${process.env.PORT}api/v1/token/login/`.trim(),requestOptions)
         let result=await response.json()
         console.log(result)
         if("non_field_errors" in result){
@@ -74,6 +76,7 @@ export default  function Loginscreen(props){
         }
         }catch(err){
             console.log(err)
+            console.log("here bitch")
             addMessage("Check Internet connection")
             setIndicatorVisible(false)
         }

@@ -21,6 +21,7 @@ const styles=StyleSheet.create({
       flexDirection:'row',
       justifyContent:'space-between',
       alignItems:'center',
+      fontFamily:'bold'
     },subHeader:{
       flexDirection:'row',
       justifyContent:'space-between',
