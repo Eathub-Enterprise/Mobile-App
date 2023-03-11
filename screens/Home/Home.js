@@ -269,7 +269,7 @@ export default function HomeScreen({ navigation }) {
             onBlur={() => { deanimateSearchBar() }}
             placeholderTextColor={colorSchema.black}
             style={styles.search}
-            placeholder={searchPlaceholder}
+            placeholder={"search..."}
             onChangeText={(txt) => { setSearchQuery(txt) }}>
 
           </TextInput>

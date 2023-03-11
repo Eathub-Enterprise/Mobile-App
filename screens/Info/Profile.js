@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, StatusBar, TouchableOpacity, TextInput, ScrollView, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, StatusBar, TouchableOpacity, TextInput, ScrollView, RefreshControl,Animated } from 'react-native';
 import { FontAwesome5, MaterialIcons, Ionicons, Feather } from '@expo/vector-icons';
 import { hideAsync } from 'expo-splash-screen';
 import { colorSchema, styles as commonstyles } from '../../setup';
@@ -17,6 +17,7 @@ export default function Profilescreen(props) {
     const [edit, setEdit] = useState(false)
     const [username, setusername] = useState('')
     const [refreshing, setRefreshing] = React.useState(false);
+    const opacity = useRef(new Animated.Value(0)).current
 
     const [address, setAddress] = useState('')
     const [email, setemail] = useState('')
@@ -26,6 +27,17 @@ export default function Profilescreen(props) {
     const [location, setLocation] = useState("")
 
     const [messages, setmessages] = useState([])
+
+    useEffect(() => {
+        //if('username' in props.route.params){
+        //addMessage(`${props.route.params.username} created`)
+        Animated.sequence([
+            Animated.delay(50),
+            Animated.spring(opacity, { toValue: 1, useNativeDriver: true, })
+        ]).start()
+        //}
+    }, [])
+
 
     function mainFunc() {
         let l_email = email
@@ -65,7 +77,7 @@ export default function Profilescreen(props) {
 
 
         SetScreen()
-        
+
     }, [])
 
     useEffect(() => {
@@ -190,7 +202,7 @@ export default function Profilescreen(props) {
                         console.log("jsnf")
                         if (Object.keys(userProfile).length > 1) {
                             addMessage("Updating your profile")
-                            await backendConnector.profile(setUserProfile, "Put", addMessage, { username, address, email, phonenumber, firstname,location }, setEdit)
+                            await backendConnector.profile(setUserProfile, "Put", addMessage, { username, address, email, phonenumber, firstname, location }, setEdit)
                         }
                         console.log(Object.keys(userProfile).length)
                     }}
@@ -202,6 +214,33 @@ export default function Profilescreen(props) {
                 </View>
 
             </ScrollView>
+            <Animated.View style={{
+                transform: [{
+                    translateY: opacity.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [50, 0],
+                    }),
+
+                }],
+
+                transform: [{
+                    translateX: opacity.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [65, 0],
+                    }),
+
+                }],
+
+
+
+                opacity,
+                position: 'absolute',
+                bottom: 0
+            }}>
+                <Text style={[commonstyles.txt, styles.DescriptionTxt]}>Tips: Only vendors in the same location as you are shown to you 
+                    .You can change your location to see vendors in that location 
+                </Text>
+            </Animated.View>
         </View>
 
     )
@@ -239,5 +278,13 @@ const styles = StyleSheet.create({
         elevation: 1,
         marginBottom: 20,
         fontFamily: 'reg'
+    }, DescriptionTxt: {
+        fontFamily: 'reg',
+        fontWeight: "500",
+        fontSize: 11,
+        color: colorSchema.grey,
+        textAlign: 'center',
+        paddingHorizontal: 40,
+
     },
 });

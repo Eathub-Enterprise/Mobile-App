@@ -309,13 +309,10 @@ const styles = StyleSheet.create({
     fontFamily: 'reg'
   },
   continue2: {
-    flexDirection: "row",
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colorSchema.white,
     marginTop: 10,
-    position: 'absolute',
-    bottom: 30
 
 
   },
@@ -335,9 +332,7 @@ const styles = StyleSheet.create({
   },
 
   FG: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 7,
+    
   },
   auth: {
     width: 45,

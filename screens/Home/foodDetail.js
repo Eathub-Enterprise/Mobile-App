@@ -37,7 +37,7 @@ export default function FoodDetailScreen({ route, navigation }) {
       }
     }
     SetScreen()
-    
+
 
     console.log(`Inside th deatil ${route.params.item.vendor.vendorname}`)
     //saving categories to state
@@ -177,7 +177,7 @@ export default function FoodDetailScreen({ route, navigation }) {
             }>
               <FontAwesome name="heart-o" size={22} color={"black"} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {  navigation.push('Cart') }}>
+            <TouchableOpacity onPress={() => { navigation.push('Cart') }}>
               <Ionicons name="cart-outline" size={26} color={"black"} />
 
             </TouchableOpacity>
@@ -194,7 +194,7 @@ export default function FoodDetailScreen({ route, navigation }) {
             <Text style={[commonstyles.txt, { fontSize: 21 }]}>{food.food_title}</Text>
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center' }} onPress={() => { navigation.navigate("More", {screen:"FoodItemsofVendor", initial: false,  params:{vendorname: route.params.item.vendor.vendorname,vendorid:route.params.item.vendor.id}}) }}>
+            <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center' }} onPress={() => { navigation.navigate("More", { screen: "FoodItemsofVendor", initial: false, params: { vendorname: route.params.item.vendor.vendorname, vendorid: route.params.item.vendor.id } }) }}>
 
               <Text style={[commonstyles.txt, styles.DescriptionTxt,]}>
                 <FontAwesome name="eye" size={15} color={colorSchema.grey} /> view vendor</Text>
@@ -258,7 +258,7 @@ export default function FoodDetailScreen({ route, navigation }) {
 
           </View>
           <View style={[commonstyles.header, { paddingHorizontal: 0 }]}>
-            <Text style={[commonstyles.txt, { fontSize: 18,fontFamily:'medium' }]}>Details</Text>
+            <Text style={[commonstyles.txt, { fontSize: 18, fontFamily: 'medium' }]}>Details</Text>
           </View>
           <View style={styles.DescriptionContainer}>
             <Text style={[commonstyles.txt, styles.DescriptionTxt]}>
@@ -266,15 +266,7 @@ export default function FoodDetailScreen({ route, navigation }) {
             </Text>
           </View>
 
-          {sideDishes ?
-            <TouchableOpacity style={styles.showSideDishesBtn} onPress={() => { setModalVisible(true) }}>
-              <Text style={[commonstyles.txt, styles.normalTxt, { color: colorSchema.pink, fontSize: 14 }]}>
-                show side dishes
-              </Text>
-            </TouchableOpacity>
 
-            : <></>
-          }
           {route.params.item.food_type == "stand-alone" ?
             <View>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -319,10 +311,20 @@ export default function FoodDetailScreen({ route, navigation }) {
                 <Text style={[commonstyles.txt, styles.normalTxt, { marginRight: 16 }]}>Total Price</Text>
                 <Text style={[commonstyles.txt, { color: colorSchema.pink, fontSize: 17, fontFamily: "reg" }]}>₦{calcPackTotal(food.food_price)} + ₦{food.delivery_fee} fee</Text>
               </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 7 }}>
 
-              <TouchableOpacity style={styles.addToCartBtn} onPress={async () => { await backendConnector.inc_or_dc_Cart("Post", food.id, addMessage, quantity, sideDishesOrder) }}>
-                <Text style={[commonstyles.txt, styles.normalTxt, { color: "#fff" }]}>Create a pack</Text>
-              </TouchableOpacity>
+                <TouchableOpacity style={styles.sideDishesBtn} onPress={async () => { await backendConnector.inc_or_dc_Cart("Post", food.id, addMessage, quantity, sideDishesOrder) }}>
+                  <Text style={[commonstyles.txt, styles.normalTxt, { color: colorSchema.pink }]}>Create a pack</Text>
+                </TouchableOpacity>
+                {sideDishes ?
+                  <TouchableOpacity style={styles.addToCartBtn} onPress={() => { setModalVisible(true) }}>
+                    <Text style={[commonstyles.txt, styles.normalTxt, { color: "#fff" }]}>show side dishes</Text>
+                  </TouchableOpacity>
+
+                  : <></>
+                }
+
+              </View>
             </View>
 
           }
@@ -365,13 +367,24 @@ const styles = StyleSheet.create({
     marginHorizontal: 7
   },
   normalTxt: {
-    fontFamily:'medium',
+    fontFamily: 'medium',
     fontSize: 16,
   },
   addToCartBtn: {
     backgroundColor: colorSchema.pink,
     width: 161,
-    height: 70,
+    height: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+    marginLeft:15,
+    borderRadius: 20
+  },
+  sideDishesBtn: {
+    width: 161,
+    borderWidth: 1,
+    borderColor: colorSchema.pink,
+    height: 60,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 20,
@@ -422,8 +435,8 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   showSideDishesBtn: {
-    borderBottomColor: colorSchema.pink, 
-    marginBottom:10,
+    borderBottomColor: colorSchema.pink,
+    marginBottom: 10,
     borderBottomWidth: 1
   }
 
