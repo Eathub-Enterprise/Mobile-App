@@ -68,7 +68,7 @@ export default function Cartscreen(props) {
         //id of 1 is not important just to make the backend satisfied
         try {
             console.log("hey")
-            let response = await fetch(`${process.env.PORT}api/v1/client/cart/1/`.trim(), requestOptions)
+            let response = await fetch(`https://emachine.pythonanywhere.com/api/v1/client/cart/1/`.trim(), requestOptions)
             let result = await response.json()
 
             console.log(result)
@@ -105,7 +105,7 @@ export default function Cartscreen(props) {
         //id of 1 is not important just to make the backend satisfied
         try {
             console.log("hey")
-            let response = await fetch(`${process.env.PORT}api/v1/client/cart/1/`.trim(), requestOptions)
+            let response = await fetch(`https://emachine.pythonanywhere.com/api/v1/client/cart/1/`.trim(), requestOptions)
             let result = await response.json()
             setrefresh(false)
 
@@ -229,12 +229,12 @@ export default function Cartscreen(props) {
                 </View>
             </Modal>
 
-            <View style={[styles.header, { paddingHorizontal: colorSchema.padding }]}>
+            <View style={[styles.header,]}>
                 <View style={[styles.header]}>
                     <TouchableOpacity onPress={() => { props.navigation.goBack() }}>
                         <MaterialIcons name="arrow-back" size={24} color={colorSchema.black} />
                     </TouchableOpacity>
-                    <Text style={[commonstyles.txt, { fontSize: 22, marginLeft: 32, marginTop: 5 }]}>{Title}</Text>
+                    <Text style={[commonstyles.txt, { fontSize: 22, marginLeft: 35, }]}>{Title}</Text>
 
                 </View>
                 <>
@@ -279,23 +279,24 @@ export default function Cartscreen(props) {
                             })
                             return (
 
-                                <Animated.View style={[{ transform: [{ scale }], opacity }]}>
+                                <Animated.View style={[{ transform: [{ scale }], opacity,marginTop:10 }]}>
                                     <TouchableOpacity style={[styles.cartItem]} onPress={() => { setCurrentItem(item); setModalVisible(true) }}>
                                         <View style={styles.cartItemLeft}>
                                             <View>
-                                                <Text style={[commonstyles.header, { fontSize: 16, paddingHorizontal: 0, marginTop: 0 }]}>{item.item.food_title}</Text>
-                                                <Text style={[commonstyles.txt, { fontFamily: 'reg', fontSize: 13, color: colorSchema.pink }]}> ₦ {item.totalPrice} </Text>
-                                                <Text style={[commonstyles.txt, { fontFamily: 'reg', fontSize: 11, fontWeight: '300', color: colorSchema.grey }]}> fee included</Text>
+                                                <Text style={[commonstyles.header, { fontSize: 18, paddingHorizontal: 0, marginTop: 0 }]}>{item.item.food_title}</Text>
+                                                <Text style={[commonstyles.txt, { fontFamily: 'reg', fontSize: 16, color: colorSchema.pink,marginTop: 4 }]}> ₦ {item.totalPrice} </Text>
                                             </View>
-                                            <TouchableOpacity style={{ marginBottom: 2 }} onPress={async () => {
+                                            <TouchableOpacity style={{ position:"absolute",bottom:14 }} onPress={async () => {
                                                 addMessage("Hold up")
-                                                await backendConnector.deleteOrderItem(addMessage,item.id)
+                                                await backendConnector.deleteOrderItem(addMessage, item.id)
                                                 setTimeout(async () => {
                                                     await getCart();
-                    
+
                                                 }, 700)
                                             }}>
-                                                <Feather name="trash" size={22} color="black" />
+                                                <Text style={{fontFamily:"medium",fontSize:13}}>
+                                                <FontAwesome5 name="trash" size={16} color={colorSchema.black} /> REMOVE
+                                                </Text>
 
                                             </TouchableOpacity>
                                         </View>
@@ -321,7 +322,13 @@ export default function Cartscreen(props) {
                             )
                         }}
                     />
-                    <View style={{ paddingHorizontal: 10 }}>
+                    <View style={{ paddingHorizontal: 10,paddingVertical:5 }}>
+                        <View style={{flexDirection:'row',marginBottom:15}}>
+                            <TextInput style={{fontFamily:'reg',fontSize:14,paddingLeft:10,height:60,width:220,backgroundColor:colorSchema.lightgray,borderRadius:20}} placeholder={"Enter Vouher Code"}/>
+                            <TouchableOpacity style={{height:60,width:100,borderRadius:20,marginLeft:12,justifyContent:'center',alignItems:"center",backgroundColor:colorSchema.pink}}>
+                                <Text style={[commonstyles.txt,{fontFamily:'reg',fontSize:14,color:colorSchema.white,}]}>Apply </Text>
+                            </TouchableOpacity>
+                        </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                             <Text style={[commonstyles.txt, { fontSize: 18 }]}>Total Price</Text>
                             <Text style={[commonstyles.txt, { color: colorSchema.pink, fontSize: 18 }]}>₦ {cart.totalPrice}</Text>
@@ -420,7 +427,8 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: colorSchema.pink
+        backgroundColor: colorSchema.pink,
+        marginTop:12
     },
     centeredView: {
         flex: 1,

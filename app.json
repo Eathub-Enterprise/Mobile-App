@@ -2,15 +2,20 @@
   "expo": {
     "name": "Eathub",
     "slug": "Eathub",
+    "scheme": "dlinking",
+
     "extra": {
-      "apiUrl": "process.env.API_URL"
+      "apiUrl": "process.env.API_URL",
+      "eas": {
+        "projectId": "2069faa9-69f6-4dcf-aae0-ff2b116e50ff"
+      }
     },
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/newsplash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -21,9 +26,25 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.creed.eathubapp"
     },
     "android": {
+      "package": "com.creed.eathubapp",
+      "googleServicesFile": "./google-services.json",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "https",
+              "host": "emachine.pythonanywhere.com",
+              "pathPrefix": "/deeplinking"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"

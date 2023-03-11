@@ -25,8 +25,8 @@ export default function FoodItemsofVendorScreen({ navigation, route }) {
   //pull to refresh function
   const onRefresh = async function () {
     setRefreshing(true);
-    await backendConnector.FoodItemsByVendor(setLatestItems, "Get", addMessage)
-    await backendConnector.FoodItemsByVendor(setPopularItems, "Post", addMessage)
+    await backendConnector.FoodItemsByVendor(setLatestItems, "Get", addMessage,route.params.vendorid)
+    await backendConnector.FoodItemsByVendor(setPopularItems, "Post", addMessage,route.params.vendorid)
     setRefreshing(false)
   }
 
@@ -43,8 +43,8 @@ export default function FoodItemsofVendorScreen({ navigation, route }) {
     async function SetScreen() {
 
       await backendConnector.categoriesList(setCategories, addMessage)
-      await backendConnector.FoodItemsByVendor(setLatestItems, "Get", addMessage, route.params.vendor.id)
-      await backendConnector.FoodItemsByVendor(setPopularItems, "Post", addMessage, route.params.vendor.id)
+      await backendConnector.FoodItemsByVendor(setLatestItems, "Get", addMessage, route.params.vendorid)
+      await backendConnector.FoodItemsByVendor(setPopularItems, "Post", addMessage, route.params.vendorid)
     }
     SetScreen()
   }, [])
@@ -81,13 +81,13 @@ export default function FoodItemsofVendorScreen({ navigation, route }) {
 
       <View style={[styles.header, { paddingHorizontal: colorSchema.padding }]}>
         <View style={[styles.header]}>
-          <TouchableOpacity onPress={() => { navigation.goBack() }}>
+          <TouchableOpacity onPress={() => { navigation.goBack("MoreInfo") }}>
             <MaterialIcons name="arrow-back" size={24} color={colorSchema.black} />
           </TouchableOpacity>
-          <Text style={[commonstyles.txt, { fontSize: 22, marginLeft: 20, marginTop: 5 }]}>{route.params.vendor.vendorname} </Text>
+          <Text style={[commonstyles.txt, { fontSize: 22, marginLeft: 20, marginTop: 5 }]}>{route.params.vendorname} </Text>
 
         </View>
-        <TouchableOpacity onPress={() => { navigation.push("Cart") }} >
+        <TouchableOpacity onPress={()=>{navigation.navigate("HomeStack", {screen:"Cart", initial: false,  })}} >
           <Ionicons name="cart-outline" size={26} color={colorSchema.black} />
 
         </TouchableOpacity>
@@ -127,7 +127,7 @@ export default function FoodItemsofVendorScreen({ navigation, route }) {
                   <TouchableOpacity key={i} onPress={async () => {
                     setRating(v);
                     addMessage("Hold up")
-                    await backendConnector.sendVendorRating(addMessage, v, route.params.vendor.id)
+                    await backendConnector.sendVendorRating(addMessage, v, route.params.vendorid)
                   }}>
 
                     <FontAwesome name="star-o" size={19} color={colorSchema.pink} />

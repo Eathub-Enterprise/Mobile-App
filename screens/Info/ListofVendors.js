@@ -94,7 +94,7 @@ export default  function ListOfVendorsScreen(props){
     //for skipping to homepage when logged in 
 
     return(
-        <View style={styles.container}>
+        <View style={styles.container} onLayout={async () => { await hideAsync() }}>
             <View style={{position:'absolute',top:25,left:0,right:0,paddingHorizontal:20}}>
                 {messages.map(m =>{
                     return(
@@ -130,10 +130,7 @@ export default  function ListOfVendorsScreen(props){
                         onValueChange={toggleSwitch}
                         value={isEnabled}
                     />
-                    <TouchableOpacity onPress={() =>
-                        console.log(location)
-                        //    props.navigation.push("Cart")
-                    } >
+                    <TouchableOpacity  onPress={()=>{props.navigation.navigate("HomeStack", {screen:"Cart", initial: false,  })}}>
 
                         <Ionicons name="cart-outline" size={26} color={colorSchema.black} />
 
@@ -156,7 +153,7 @@ export default  function ListOfVendorsScreen(props){
                 contentContainerStyle={{paddingHorizontal:40,alignContent:'center',justifyContent:'center'}}
                 renderItem={({item})=>{
                     return(
-                        <TouchableOpacity onPress={()=>{props.navigation.push("FoodItemsofVendor",{vendor:item})}}>
+                        <TouchableOpacity onPress={()=>{props.navigation.push("FoodItemsofVendor",{vendorname:item.vendorname,vendorid:item.id})}}>
                             <ImageBackground source={genImageBackground()} resizeMode="cover" style={styles.bgImage} imageStyle={{borderRadius:10}} >
                                 <View style={{alignItems:'center',justifyContent:'center'}}>
                                     <Text style={[commonstyles.txt,{color:colorSchema.white}]}>{item.vendorname}</Text>

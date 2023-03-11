@@ -118,8 +118,7 @@ export default function SearchScreen(props) {
                         value={isEnabled}
                     />
                     <TouchableOpacity onPress={() =>
-                        console.log(location)
-                        //    props.navigation.push("Cart")
+                        props.navigation.push("Cart")
                     } >
 
                         <Ionicons name="cart-outline" size={26} color={colorSchema.black} />

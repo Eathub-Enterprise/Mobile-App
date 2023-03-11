@@ -35,7 +35,7 @@ export default function FavouriteMealsScreen(props) {
     useEffect(() => {
         async function SetScreen() {
             // await backendConnector.getFavouriteMeals(setFood, addMessage, props.route.params.categoryId, currentPage, setcurrentPage, food, setrefresh, location)
-            await backendConnector.get_or_update_or_remove_FavouriteMeals(setFood, addMessage, "Get", setrefresh,null,setShowAnimation)
+            await backendConnector.get_or_update_or_remove_FavouriteMeals(setFood, addMessage, "Get", setrefresh, null, setShowAnimation)
         }
         SetScreen()
     }, [])
@@ -107,7 +107,8 @@ export default function FavouriteMealsScreen(props) {
             {showAnimation == false ?
                 <FlatList
                     onRefresh={async () => {
-                        await backendConnector.get_or_update_or_remove_FavouriteMeals(setFood, addMessage, "Get", setrefresh)
+                        await backendConnector.get_or_update_or_remove_FavouriteMeals(setFood, addMessage, "Get", setrefresh, null, setShowAnimation)
+
                     }
                     }
                     refreshing={isrefreshing}
@@ -120,10 +121,8 @@ export default function FavouriteMealsScreen(props) {
                                     () => { props.navigation.push("FoodDetail", { item: item, vendor: item.vendor }) }
                                 }
                                 onLongPress={async () => {
-                                    addMessage("Removing...")
-                                    await backendConnector.get_or_update_or_remove_FavouriteMeals(null, addMessage, "Put", null, item.id)
-
-                                    await backendConnector.get_or_update_or_remove_FavouriteMeals(setFood, addMessage, "Get", setrefresh)
+                                    await backendConnector.get_or_update_or_remove_FavouriteMeals(setFood, addMessage, "Put", setrefresh, item.id, setShowAnimation)
+                                    addMessage("Item removed")
                                 }}>
                                 <ImageBackground source={{ uri: item.image }} resizeMode="cover" style={styles.bgImage} imageStyle={{ borderRadius: 10 }} >
                                     <View style={{ alignItems: 'center', justifyContent: 'center' }}>

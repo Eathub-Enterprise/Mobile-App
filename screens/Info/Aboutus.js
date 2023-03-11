@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, StatusBar, TouchableOpacity, Animated } from 'react-native';
 import { FontAwesome5, MaterialIcons, Ionicons, Feather } from '@expo/vector-icons';
-import { hideAsync } from 'expo-splash-screen';
 import { colorSchema, styles as commonstyles } from '../../setup';
 import Message from '../../components/messagetoast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import MoreInfoList from '../../components/MoreInfoList';
 
 //add message toast to display messages
-export default function MoreInfoscreen(props) {
+export default function Aboutusscreen(props) {
     const opacity = useRef(new Animated.Value(0)).current
 
     function addMessage(message) {
@@ -31,8 +29,8 @@ export default function MoreInfoscreen(props) {
 
     const [messages, setmessages] = useState([])
     let pages = [
+        { icon: 'shopping-bag', name: "My Orders", page: "OrderTracker" },
         { icon: 'home', name: "Vendors", page: "ListOfVendors" },
-        { icon: 'info', name: "About us", page: "AboutUs" },
 
         { icon: "log-out", name: "Logout", page: removeToken },
     ]
@@ -85,9 +83,11 @@ export default function MoreInfoscreen(props) {
                 })}
             </View>
             <View style={[styles.header, { paddingHorizontal: 20 }]}>
-                <View style={[]}>
-
-                    <Text style={[commonstyles.txt, { fontFamily: 'reg', fontSize: 22, marginTop: 5 }]}> More</Text>
+                <View style={[{flexDirection:"row"}]}>
+                    <TouchableOpacity style={[{marginTop:2,}]} onPress={() => { props.navigation.goBack() }}>
+                        <MaterialIcons name="arrow-back" size={24} color={colorSchema.black} />
+                    </TouchableOpacity>
+                    <Text style={[commonstyles.txt, { fontFamily: 'reg', fontSize: 22,marginLeft:14 }]}> About</Text>
 
                 </View>
                 <TouchableOpacity onPress={() => { props.navigation.navigate("HomeStack", { screen: "Cart", initial: false, }) }}>
@@ -97,13 +97,57 @@ export default function MoreInfoscreen(props) {
 
             </View>
             <View style={{ height: 30 }}></View>
-            {
-                pages.map((v, i) => {
-                    return (
-                        <MoreInfoList key={i} removeToken={removeToken} v={v} i={i} navigation={props.navigation} />
-                    )
-                })
-            }
+            <View style={{ paddingHorizontal: 20 }}>
+                <View style={{ marginBottom: 15 }}>
+                    <Text style={[commonstyles.header, { fontsize: 25, paddingHorizontal: 0 }]}>
+                        Why Eathub?
+                    </Text>
+                    <Text style={[commonstyles.txt, { fontSize: 14, fontFamily: "reg" }]}>
+                        ...because We believe in building a future of easy business process
+                    </Text>
+                </View>
+
+                <View style={{ marginBottom: 15 }}>
+                    <Text style={[commonstyles.header, { fontsize: 25, paddingHorizontal: 0 }]}>
+                        What is Eathub?
+                    </Text>
+                    <Text style={[commonstyles.txt, { fontSize: 14, fontFamily: "reg" }]}>
+                        We simply help Food SME Business increase sales, better traction and gain more customers.
+                    </Text>
+                </View>
+
+                <View style={{ marginBottom: 15 }}>
+                    <Text style={[commonstyles.header, { fontsize: 25, paddingHorizontal: 0 }]}>
+                        How Do We Achieve That?
+                    </Text>
+                    <Text style={[commonstyles.txt, { fontSize: 14, fontFamily: "reg" }]}>
+                        ...by providing tools and making it easy for food business to operate.
+                    </Text>
+                </View>
+                <View style={{ marginBottom: 15 }}>
+                    <Text style={[commonstyles.header, { fontsize: 25, paddingHorizontal: 0 }]}>
+                        Message to Food Restaurants
+                    </Text>
+                    <Text style={[commonstyles.txt, { fontSize: 14, fontFamily: "reg" }]}>
+                        Our platform helps small food businesses increase sales by providing tools for marketing, simple data analysis, and order management to attract more customers.
+                    </Text>
+                </View>
+
+                <View style={{ marginBottom: 15 }}>
+                    <Text style={[commonstyles.header, { fontsize: 25, paddingHorizontal: 0 }]}>
+                        Summary
+                    </Text>
+                    <Text style={[commonstyles.txt, { fontSize: 14, fontFamily: "reg" }]}>
+                        Eathub is a bridging platform designed to help Food SME’s gain traction, generate sales and help market their business, making it easy for them to operate by providing the tools necessary and also making it easier for their Customers(users) to order for variety of meals curated to satisfy their taste buds.
+                    </Text>
+                </View>
+
+
+
+
+            </View>
+
+
             <Animated.View style={{
                 transform: [{
                     translateY: opacity.interpolate({

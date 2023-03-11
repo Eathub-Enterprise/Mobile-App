@@ -1,11 +1,13 @@
 import { StyleSheet, View,Text,SafeAreaView, TouchableOpacity, Animated,ScrollView,Image, TextInput, FlatList} from 'react-native';
 
+
+//These are the basic styles i repeat everywhere
 let colorSchema={
     black:'#100F1F',
-    pink:'#DA3A4B',
+    pink:'#FF8323',
     grey:'#B0B0B0',
-    lightgray:'#D9D9D9',
-
+    lightgray:'#F6F6F6',
+    verylightgray:"#F6F6F6",
     search:'#6C6C6C',
     white:'#FFFFFF',
     font:'poppins',

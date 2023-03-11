@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "711497362252",
+    "project_id": "eathubnotification",
+    "storage_bucket": "eathubnotification.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:711497362252:android:166ac906c9a9fbed7a7de9",
+        "android_client_info": {
+          "package_name": "com.creed.eathubapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "711497362252-7u9ovdqde5rtddv8h4i0182cp6olhgov.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdVbaoUkezNs16CdgPDmf2EU-Yt0B-8yI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "711497362252-7u9ovdqde5rtddv8h4i0182cp6olhgov.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

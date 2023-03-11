@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 //importing dummy data for categories
-import { FontAwesome, Ionicons, EvilIcons, MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { StyleSheet, View, Text, ImageBackground, TouchableOpacity, StatusBar, ScrollView, FlatList, Modal, Pressable } from 'react-native';
 import { colorSchema, styles as commonstyles } from '../../setup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -28,6 +28,7 @@ export default function FoodDetailScreen({ route, navigation }) {
 
   useEffect(() => {
     async function SetScreen() {
+
       setFood(route.params.item)
       setVendor(route.params.vendor)
       if (route.params.item.food_type == "main-dish") {
@@ -36,8 +37,9 @@ export default function FoodDetailScreen({ route, navigation }) {
       }
     }
     SetScreen()
-    console.log(route.params.item)
-    //console.log(`Inside th deatil ${route.params.item.id}`)
+    
+
+    console.log(`Inside th deatil ${route.params.item.vendor.vendorname}`)
     //saving categories to state
   }, [])
 
@@ -159,7 +161,7 @@ export default function FoodDetailScreen({ route, navigation }) {
           borderBottomRightRadius: 20,
           resizeMode: 'cover',
         }}
-        style={[{ flex: 1.1 }]}>
+        style={[{ flex: 1.5 }]}>
 
 
         <View style={[commonstyles.header, { marginTop: 0, paddingTop: StatusBar.currentHeight }]}>
@@ -169,13 +171,13 @@ export default function FoodDetailScreen({ route, navigation }) {
           <View style={commonstyles.subHeader}>
             <TouchableOpacity style={{ marginTop: 3, marginRight: 13 }} onPress={async () => {
               addMessage("Chill...")
-              await backendConnector.get_or_update_or_remove_FavouriteMeals(null,addMessage,"Post",null,food.id)
+              await backendConnector.get_or_update_or_remove_FavouriteMeals(null, addMessage, "Post", null, food.id)
             }
 
             }>
               <FontAwesome name="heart-o" size={22} color={"black"} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { console.log(route.params) }}>
+            <TouchableOpacity onPress={() => {  navigation.push('Cart') }}>
               <Ionicons name="cart-outline" size={26} color={"black"} />
 
             </TouchableOpacity>
@@ -189,13 +191,14 @@ export default function FoodDetailScreen({ route, navigation }) {
       <View style={{ flex: 2, paddingHorizontal: 21 }}>
         <ScrollView>
           <View style={[commonstyles.header, { paddingHorizontal: 0 }]}>
-            <Text style={[commonstyles.txt, { fontFamily: 'reg', fontSize: 20 }]}>{food.food_title}</Text>
+            <Text style={[commonstyles.txt, { fontSize: 21 }]}>{food.food_title}</Text>
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-              <Ionicons name="md-location-outline" size={18} color={colorSchema.grey} />
-              <Text style={[commonstyles.txt, { fontFamily: 'reg', fontSize: 16, color: colorSchema.grey }]}>{vendor.location}</Text>
-            </View>
+            <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center' }} onPress={() => { navigation.navigate("More", {screen:"FoodItemsofVendor", initial: false,  params:{vendorname: route.params.item.vendor.vendorname,vendorid:route.params.item.vendor.id}}) }}>
+
+              <Text style={[commonstyles.txt, styles.DescriptionTxt,]}>
+                <FontAwesome name="eye" size={15} color={colorSchema.grey} /> view vendor</Text>
+            </TouchableOpacity>
             <View style={{}}>
 
               <Text style={[commonstyles.txt, { fontFamily: 'reg', fontSize: 16, color: colorSchema.pink }]}>₦{food.food_price}.00 </Text>
@@ -204,8 +207,22 @@ export default function FoodDetailScreen({ route, navigation }) {
           </View>
           <View style={{ marginTop: 5, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <View>
-              <Text style={[commonstyles.txt, { fontFamily: 'reg', fontSize: 16, color: colorSchema.lightgray }]}>{food.total_rating} rating</Text>
+              <Text style={[commonstyles.txt, { fontFamily: 'reg', fontSize: 13, color: colorSchema.lightgray }]}>{food.total_rating} rating</Text>
               <View style={{ marginTop: 5, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              </View>
+              <View style={{ flexDirection: 'row' }}>
+                {[1, 2, 3, 4, 5].map((v, i) => {
+                  if (v <= food.total_rating) {
+                    return (
+                      <TouchableOpacity key={i} onPress={() => { setRating(v); }}>
+                        <FontAwesome name="star" size={19} color={colorSchema.pink} />
+                      </TouchableOpacity>)
+                  } else {
+                    return null
+                  }
+
+
+                })}
               </View>
 
 
@@ -213,7 +230,7 @@ export default function FoodDetailScreen({ route, navigation }) {
             {//RATING OF FOOD SYSTEM
             }
             <View>
-              <Text style={[commonstyles.txt, { fontFamily: 'reg', fontSize: 16, color: colorSchema.lightgray }]}>Give your rating</Text>
+              <Text style={[commonstyles.txt, { fontFamily: 'reg', fontSize: 13, color: colorSchema.lightgray }]}>Give your rating</Text>
               <View style={{ marginTop: 5, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 {[1, 2, 3, 4, 5].map((v, i) => {
                   if (v <= rating) {
@@ -226,9 +243,7 @@ export default function FoodDetailScreen({ route, navigation }) {
                       <TouchableOpacity key={i} onPress={async () => {
                         setRating(v);
                         addMessage("Chill...")
-                        console.log(v)
                         await backendConnector.sendFoodRating(addMessage, v, food.id)
-                        await getFood()
                       }}>
 
                         <FontAwesome name="star-o" size={19} color={colorSchema.pink} />
@@ -243,7 +258,7 @@ export default function FoodDetailScreen({ route, navigation }) {
 
           </View>
           <View style={[commonstyles.header, { paddingHorizontal: 0 }]}>
-            <Text style={[commonstyles.txt, { fontFamily: 'reg', fontSize: 20 }]}>DETAILS</Text>
+            <Text style={[commonstyles.txt, { fontSize: 18,fontFamily:'medium' }]}>Details</Text>
           </View>
           <View style={styles.DescriptionContainer}>
             <Text style={[commonstyles.txt, styles.DescriptionTxt]}>
@@ -252,7 +267,7 @@ export default function FoodDetailScreen({ route, navigation }) {
           </View>
 
           {sideDishes ?
-            <TouchableOpacity style={{ borderBottomColor: colorSchema.pink, borderBottomWidth: 1 }} onPress={() => { setModalVisible(true) }}>
+            <TouchableOpacity style={styles.showSideDishesBtn} onPress={() => { setModalVisible(true) }}>
               <Text style={[commonstyles.txt, styles.normalTxt, { color: colorSchema.pink, fontSize: 14 }]}>
                 show side dishes
               </Text>
@@ -268,7 +283,7 @@ export default function FoodDetailScreen({ route, navigation }) {
                   <TouchableOpacity style={styles.Greenbtn} onPress={() => { changeQuantity('dec') }}>
                     <Text style={styles.GreenbtnTxt}>-</Text>
                   </TouchableOpacity>
-                  <Text style={[styles.GreenbtnTxt, { color: colorSchema.black }]}>{quantity}</Text>
+                  <Text style={[commonstyles.txt, styles.normalTxt, { marginHorizontal: 5 }]}>{quantity}</Text>
                   <TouchableOpacity style={styles.Greenbtn} onPress={() => { changeQuantity('inc') }}>
                     <Text style={styles.GreenbtnTxt}>+</Text>
                   </TouchableOpacity>
@@ -292,7 +307,7 @@ export default function FoodDetailScreen({ route, navigation }) {
                   <TouchableOpacity style={styles.Greenbtn} onPress={() => { changeQuantity('dec') }}>
                     <Text style={styles.GreenbtnTxt}>-</Text>
                   </TouchableOpacity>
-                  <Text style={[styles.GreenbtnTxt, { color: colorSchema.black }]}>{quantity}</Text>
+                  <Text style={[commonstyles.txt, styles.normalTxt, { marginHorizontal: 5 }]}>{quantity}</Text>
                   <TouchableOpacity style={styles.Greenbtn} onPress={() => { changeQuantity('inc') }}>
                     <Text style={styles.GreenbtnTxt}>+</Text>
                   </TouchableOpacity>
@@ -302,7 +317,7 @@ export default function FoodDetailScreen({ route, navigation }) {
 
               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 7 }}>
                 <Text style={[commonstyles.txt, styles.normalTxt, { marginRight: 16 }]}>Total Price</Text>
-                <Text style={[commonstyles.txt, styles.normalTxt, { color: colorSchema.pink, fontSize: 17 }]}>₦{calcPackTotal(food.food_price)} + ₦{food.delivery_fee} fee</Text>
+                <Text style={[commonstyles.txt, { color: colorSchema.pink, fontSize: 17, fontFamily: "reg" }]}>₦{calcPackTotal(food.food_price)} + ₦{food.delivery_fee} fee</Text>
               </View>
 
               <TouchableOpacity style={styles.addToCartBtn} onPress={async () => { await backendConnector.inc_or_dc_Cart("Post", food.id, addMessage, quantity, sideDishesOrder) }}>
@@ -333,7 +348,7 @@ const styles = StyleSheet.create({
   DescriptionTxt: {
     fontFamily: 'reg',
     fontWeight: "500",
-    fontSize: 14,
+    fontSize: 13,
     color: colorSchema.grey
   },
   Greenbtn: {
@@ -350,13 +365,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 7
   },
   normalTxt: {
-    fontFamily: 'reg',
-    fontSize: 20
+    fontFamily:'medium',
+    fontSize: 16,
   },
   addToCartBtn: {
     backgroundColor: colorSchema.pink,
     width: 161,
-    height: 60,
+    height: 70,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 20,
@@ -405,6 +420,11 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: "center"
+  },
+  showSideDishesBtn: {
+    borderBottomColor: colorSchema.pink, 
+    marginBottom:10,
+    borderBottomWidth: 1
   }
 
 

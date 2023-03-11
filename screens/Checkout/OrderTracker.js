@@ -6,28 +6,31 @@ import Message from '../../components/messagetoast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LottieView from 'lottie-react-native';
 import Endpoints from '../../backend';
-
+import QRCode from 'react-native-qrcode-svg';
 let STATUS_COLOR = {
-    accepted: "#FF8C00",
-    payed:"#C8F514",
-    onroute: "#32CD32",
+    accepted: "#19B85B",
+    payed: "#19B85B",
+    onroute: "#19B85B",
     //ordered: "#FF8C00", oranginsh color
-    ordered:"#F6FF00",
-    declined: "#FF4500"
+    ordered: "#F6A608",
+    declined: "#EA3C3D"
 }
 
 //add message toast to display messages
 export default function OrderTrackerScreen(props) {
     const [currentItemStatus, setcurrentItemStatus] = useState("")
     const [currentItemid, setcurrentItemId] = useState(0)
+    const [currentItem, setcurrentItem] = useState({})
     const [isrefreshing, setrefresh] = useState(false)
     const [messages, setmessages] = useState([])
     const [modalVisible, setModalVisible] = useState(false);
+    const [modal2Visible, setModal2Visible] = useState(false);
     const [food, setFood] = useState([])
     const [currentPage, setcurrentPage] = useState(1)
     const scrolling = useRef(new Animated.Value(0)).current;
     const itemSize = 120 + 20 * 3
     const [showAnimation, setShowAnimation] = useState(false)
+    const [Header, setHeader] = useState("Track your orders")
 
     let backendConnector = new Endpoints()
 
@@ -50,45 +53,111 @@ export default function OrderTrackerScreen(props) {
 
     function genModalText() {
         console.log(currentItemStatus)
+        console.log(currentItemid)
+        let me = 3
         if (currentItemStatus == "ordered") {
             return (
                 <Text style={[styles.normalTxt, { fontSize: 15, fontFamily: 'reg', color: colorSchema.black, textAlign: "center" }]}>Note: Only ordered items accepted be
                     the vendor can be paid for.
                 </Text>)
         } else if (currentItemStatus == "accepted") {
-            return (<Text style={[styles.normalTxt, { fontSize: 15, fontFamily: 'reg', color: colorSchema.black, textAlign: "center" }]}>Note: Your meal has been
-                accepted by the vendor and is currently being prepared.
-            </Text>)
-        } else if (currentItemStatus == "onroute") {
-
-            return (
-                <TouchableOpacity style={{ padding: 5 }} onPress={() => { setModalVisible(false); props.navigation.push("Payment", { itemId: currentItemid }) }}>
+            return (<View>
+                <Text style={[styles.normalTxt, { fontSize: 15, fontFamily: 'reg', color: colorSchema.black, textAlign: "center", marginBottom: 5 }]}>Note: Your meal has been
+                    acceptid by the vendor and is currently being prepared.
+                </Text>
+                <TouchableOpacity style={{ padding: 5, marginBottom: 5 }} onPress={() => {
+                    setModalVisible(false);
+                    props.navigation.navigate("More", { screen: "Payment", initial: false, params: { itemId: currentItemid } })
+                }}>
                     <Text style={[styles.normalTxt, { fontSize: 15, fontFamily: 'reg', color: colorSchema.pink, textAlign: "center" }]}>Pay for item
                     </Text>
                 </TouchableOpacity>
+            </View>
+            )
+        } else if (currentItemStatus == "onroute") {
+
+            return (
+                <View style={{ justifyContent: "center", alignItems: "center" }}>
+                    <QRCode value={currentItemid.toString()} size={200} />
+
+                    <TouchableOpacity style={{ padding: 5, marginTop: 5 }} onPress={() => {
+                        //setModalVisible(false);
+                        //props.navigation.navigate("More", { screen: "Payment", initial: false, params: { itemId: currentItemid } })
+                    }}>
+                        <Text style={[styles.normalTxt, { fontSize: 15, fontFamily: 'reg', color: colorSchema.black, textAlign: "center" }]}>
+                            Note:The qr-code above would be scanned by the dispatch rider to cofirm delivery
+                        </Text>
+                    </TouchableOpacity>
+                </View>
             )
 
         } else if (currentItemStatus == "payed") {
 
             return (
-                <TouchableOpacity style={{ padding: 5 }} onPress={async () => {
-                    addMessage("Hold up")
-                    await backendConnector.deleteOrderItem(addMessage, currentItemid);
-                    setFood([])
-                    setcurrentPage((cp) => 1)
-                    await backendConnector.TrackOrder(setFood, "Get", addMessage, 1,
-                        setcurrentPage, food, setrefresh)
-                    setModalVisible(false)
-                }}>
-                    <Text style={[styles.normalTxt, { fontSize: 15, fontFamily: 'reg', color: colorSchema.pink, textAlign: "center" }]}>Clear from page
+
+                <View style={{ justifyContent: "center", alignItems: "center" }}>
+                    <QRCode value={currentItemid.toString()} size={200} />
+                    <TouchableOpacity style={{ padding: 5 }} onPress={async () => {
+                        addMessage("Hold up")
+                        await backendConnector.deleteOrderItem(addMessage, currentItemid);
+                        setFood([])
+                        setcurrentPage((cp) => 1)
+                        await backendConnector.TrackOrder(setFood, "Get", addMessage, 1,
+                            setcurrentPage, food, setrefresh)
+                        setModalVisible(false)
+                    }}>
+                        <Text style={[styles.normalTxt, { fontSize: 15, fontFamily: 'reg', color: colorSchema.pink, textAlign: "center" }]}>Clear from page
+                        </Text>
+                    </TouchableOpacity >
+
+                </View>
+            )
+        } else if (currentItemStatus == "delivered") {
+
+            return (
+
+                <View style={{ justifyContent: "center", alignItems: "center" }}>
+                    <Text style={[styles.normalTxt, { fontSize: 15, fontFamily: 'reg', color: colorSchema.black, textAlign: "center" }]}>
+                        Note:This item has already been delivered and can be now be removed
                     </Text>
-                </TouchableOpacity>
+
+                    <TouchableOpacity style={{ padding: 5 }} onPress={async () => {
+                        addMessage("Hold up")
+                        await backendConnector.deleteOrderItem(addMessage, currentItemid);
+                        setFood([])
+                        setcurrentPage((cp) => 1)
+                        await backendConnector.TrackOrder(setFood, "Get", addMessage, 1,
+                            setcurrentPage, food, setrefresh, setHeader)
+                        setModalVisible(false)
+                    }}>
+                        <Text style={[styles.normalTxt, { fontSize: 15, fontFamily: 'reg', color: colorSchema.pink, textAlign: "center" }]}>Clear from page
+                        </Text>
+                    </TouchableOpacity >
+
+                </View>
             )
         } else {
             return (
-                <Text style={[styles.normalTxt, { fontSize: 15, fontFamily: 'reg', color: colorSchema.black, textAlign: "center" }]}>Note: This order has been declined
-                    by the vendor.
-                </Text>
+                <View>
+
+                    <Text style={[styles.normalTxt, { fontSize: 15, fontFamily: 'reg', color: colorSchema.black, textAlign: "center" }]}>Note: This order has been declined
+                        by the vendor.
+                    </Text>
+
+                    <TouchableOpacity style={{ padding: 5 }} onPress={async () => {
+                        addMessage("Hold up")
+                        await backendConnector.deleteOrderItem(addMessage, currentItemid);
+                        setFood([])
+                        setcurrentPage((cp) => 1)
+                        await backendConnector.TrackOrder(setFood, "Get", addMessage, 1,
+                            setcurrentPage, food, setrefresh, setHeader)
+                        setModalVisible(false)
+                    }}>
+                        <Text style={[styles.normalTxt, { fontSize: 15, fontFamily: 'reg', color: colorSchema.pink, textAlign: "center" }]}>Clear from page
+                        </Text>
+                    </TouchableOpacity >
+                </View>
+
             )
         }
     }
@@ -96,12 +165,12 @@ export default function OrderTrackerScreen(props) {
     useEffect(() => {
         async function SetScreen() {
             await backendConnector.TrackOrder(setFood, "Get", addMessage, currentPage,
-                setcurrentPage, food, setrefresh
+                setcurrentPage, food, setrefresh, setHeader
             )
         }
         SetScreen()
 
-        console.log("Cart.js")
+
     }, [])
 
 
@@ -144,7 +213,7 @@ export default function OrderTrackerScreen(props) {
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         {
-                            genModalText()
+                            genModalText(currentItem.id)
                         }
                         <Pressable
                             style={[styles.button, styles.buttonClose]}
@@ -155,18 +224,36 @@ export default function OrderTrackerScreen(props) {
                     </View>
                 </View>
             </Modal>
-            <View style={[styles.header, { paddingHorizontal: colorSchema.padding }]}>
-                <View style={[styles.header]}>
-                    <TouchableOpacity onPress={() => { props.navigation.goBack() }}>
-                        <MaterialIcons name="arrow-back" size={24} color={colorSchema.black} />
-                    </TouchableOpacity>
-                    <Text style={[commonstyles.txt, { fontSize: 22, marginLeft: 32, marginTop: 5 }]}>Track your orders</Text>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modal2Visible}
+                onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                    setModal2Visible(!modal2Visible);
+                }}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={[commonstyles.header, { fontSize: 13, paddingHorizontal: 0, marginTop: 0, textAlign: 'center' }]}>{currentItem.description}</Text>
+                        <Pressable
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={() => { setModal2Visible(false) }}
+                        >
+                            <Ionicons name="ios-close-outline" size={24} color={colorSchema.white} />
+                        </Pressable>
+                    </View>
+                </View>
+            </Modal>
+            <View style={[styles.header,]}>
+                <View style={[]}>
+
+                    <Text style={[commonstyles.txt, { fontFamily: 'reg', fontSize: 22, marginTop: 5 }]}>{Header}</Text>
 
                 </View>
-                <>
+                <TouchableOpacity>
 
-                </>
-
+                </TouchableOpacity>
             </View>
 
             {showAnimation == false ?
@@ -178,7 +265,7 @@ export default function OrderTrackerScreen(props) {
                             setFood([])
                             setcurrentPage((cp) => 1)
                             await backendConnector.TrackOrder(setFood, "Get", addMessage, 1,
-                                setcurrentPage, food, setrefresh)
+                                setcurrentPage, food, setrefresh, setHeader)
                         }}
                         refreshing={isrefreshing}
                         contentContainerStyle={{ marginTop: 14, backgroundColor: "#fff", }}
@@ -211,8 +298,11 @@ export default function OrderTrackerScreen(props) {
                             })
                             return (
 
-                                <Animated.View style={[{ transform: [{ scale }], opacity }]}>
-                                    <TouchableOpacity onPress={() => { setcurrentItemStatus(item.status); setcurrentItemId(item.id); setModalVisible(true) }}>
+                                <Animated.View style={[]}>
+                                    <TouchableOpacity
+                                        onPress={() => { setcurrentItemStatus(item.status); setcurrentItemId(item.id); setModalVisible(true) }}
+                                        onLongPress={() => { setcurrentItem(item); setModal2Visible(true) }}
+                                    >
                                         <ImageBackground source={{ uri: item.item.image }} resizeMode="cover" style={styles.bgImage} imageStyle={{ borderRadius: 10 }} >
                                             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                                                 <Text style={[commonstyles.txt, { color: colorSchema.white }]}>{item.item.food_title}</Text>
