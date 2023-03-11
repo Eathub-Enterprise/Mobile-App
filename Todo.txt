@@ -1,0 +1,3 @@
+Work on the search page 
+work on thr rating functionality
+"react-native-web": "~0.18.7"
